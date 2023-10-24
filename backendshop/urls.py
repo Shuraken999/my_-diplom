@@ -17,10 +17,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from inetshop.views import ProductInfoView
+from inetshop.views import ProductInfoView, CategoryView, ShopView
 
 app_name = 'inetshop'
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('categories', CategoryView.as_view(), name='categories'),
+    path('shops', ShopView.as_view(), name='shops'),
     path('products', ProductInfoView.as_view(), name='product'),
+    path('products/update', ProductInfoView.as_view(), name='product'),
 ]

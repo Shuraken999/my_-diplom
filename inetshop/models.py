@@ -31,7 +31,7 @@ USER_TYPE_CHOICES = (
 #
 #     def _create_user(self, email, password, **extra_fields):
 #         """
-#         Create and save a user with the given username, email, and password.
+#         Создает и сохраняет пользователя с указанным именем пользователя, адресом электронной почты и паролем.
 #         """
 #         if not email:
 #             raise ValueError('The given email must be set')
@@ -75,15 +75,15 @@ USER_TYPE_CHOICES = (
 #         help_text=_('Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.'),
 #         validators=[username_validator],
 #         error_messages={
-#             'unique': _("A user with that username already exists."),
+#             'unique': _("Пользователь с таким именем уже существует."),
 #         },
 #     )
 #     is_active = models.BooleanField(
 #         _('active'),
 #         default=False,
 #         help_text=_(
-#             'Designates whether this user should be treated as active. '
-#             'Unselect this instead of deleting accounts.'
+#             'Указывает на то, что пользователь активен.'
+#             'Вместо удаления можно деактивировать пользователя.'
 #         ),
 #     )
 #     type = models.CharField(verbose_name='Тип пользователя', choices=USER_TYPE_CHOICES, max_length=5, default='buyer')
