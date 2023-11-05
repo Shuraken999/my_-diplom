@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from inetshop.models import Category, Shop, ProductInfo, Product, ProductParameter, OrderItem, Order, Contact
+from inetshop.models import Category, Shop, ProductInfo, Product, ProductParameter, OrderItem, Order, Contact, User
 
 
 class ContactSerializer(serializers.ModelSerializer):
@@ -11,6 +11,15 @@ class ContactSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'user': {'write_only': True}
         }
+
+
+class UserSerializer(serializers.ModelSerializer):
+    contacts = ContactSerializer(read_only=True, many=True)
+
+    class Meta:
+        model = User
+        fields = ('id', 'first_name', 'last_name', 'email', 'company', 'position', 'contacts')
+        read_only_fields = ('id',)
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -49,5 +58,5 @@ class ProductInfoSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = ProductInfo
-        fields = ('id', 'model', 'product', 'shop', 'quantity', 'price', 'price_rrc', 'product_parameters',)
+        fields = ('id', 'product',  'model', 'shop', 'quantity', 'price', 'price_rrc', 'product_parameters',)
         read_only_fields = ('id',)

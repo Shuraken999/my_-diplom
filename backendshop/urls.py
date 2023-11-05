@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from inetshop.views import ProductInfoView, CategoryView, ShopView
+from inetshop.views import ProductInfoView, CategoryView, ShopView, PartnerUpdate
 
 app_name = 'inetshop'
 urlpatterns = [
@@ -25,5 +25,6 @@ urlpatterns = [
     path('categories', CategoryView.as_view(), name='categories'),
     path('shops', ShopView.as_view(), name='shops'),
     path('products', ProductInfoView.as_view(), name='product'),
-    path('products/update', ProductInfoView.as_view(), name='product'),
+    path('partner/update', PartnerUpdate.as_view(), name='partner-update'),
+    # path('user/register', RegisterAccount.as_view(), name='user-register'),
 ]
