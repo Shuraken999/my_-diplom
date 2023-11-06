@@ -83,7 +83,7 @@ WSGI_APPLICATION = 'backendshop.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': '2',
+        'NAME': 'diplom_home',
         'HOST': '127.0.0.1',
         'PORT': '5432',
         'USER': 'postgres',
@@ -128,6 +128,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+# AUTH_USER_MODEL = 'backendshop.User'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # EMAIL_USE_TLS = True
 
