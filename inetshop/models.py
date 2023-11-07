@@ -20,6 +20,8 @@ USER_TYPE_CHOICES = (
     ('buyer', 'Покупатель'),
 
 )
+
+
 class User(models.Model):
     username_validator = UnicodeUsernameValidator()
     username = models.CharField(
@@ -162,6 +164,7 @@ class Contact(models.Model):
     def __str__(self):
         return f'{self.city} {self.street} {self.house}'
 
+
 class Order(models.Model):
     dt = models.DateTimeField(auto_now_add=True)
     state = models.CharField(verbose_name='Статус', choices=STATE_CHOICES, max_length=15)
@@ -180,6 +183,7 @@ class Order(models.Model):
     # @property
     # def sum(self):
     #     return self.ordered_items.aggregate(total=Sum("quantity"))["total"]
+
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, verbose_name='Заказ', related_name='ordered_items', blank=True,
