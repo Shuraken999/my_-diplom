@@ -17,7 +17,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from inetshop.views import ProductInfoView, CategoryView, ShopView, PartnerUpdate, RegisterAccount, AccountDetails
+from inetshop.views import ProductInfoView, CategoryView, ShopView, PartnerUpdate, RegisterAccount, AccountDetails, \
+    LoginAccount
 
 app_name = 'inetshop'
 urlpatterns = [
@@ -27,5 +28,6 @@ urlpatterns = [
     path('products', ProductInfoView.as_view(), name='product'),
     path('partner/update', PartnerUpdate.as_view(), name='partner-update'),
     path('user/register', RegisterAccount.as_view(), name='user-register'),
+    path('user/login', LoginAccount.as_view(), name='user-login'),
     path('user/details', AccountDetails.as_view(), name='user-details'),
 ]

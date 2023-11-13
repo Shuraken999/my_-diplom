@@ -71,8 +71,8 @@ class AccountDetails(APIView):
 
     # получить данные
     def get(self, request, *args, **kwargs):
-        # if not request.user.is_authenticated:
-        #     return JsonResponse({'Status': False, 'Error': 'Требуется вход в аккаунт'}, status=403)
+        if not request.user.is_authenticated:
+            return JsonResponse({'Status': False, 'Error': 'Требуется вход в аккаунт/Account login required'}, status=403)
 
         serializer = UserSerializer(request.user)
         return Response(serializer.data)
@@ -113,8 +113,9 @@ class LoginAccount(APIView):
     # Авторизация методом POST
     def post(self, request, *args, **kwargs):
 
-        if {'email', 'password'}.issubset(request.data):
-            user = authenticate(request, username=request.data['email'], password=request.data['password'])
+        if {'username', 'password'}.issubset(request.data):
+            user = authenticate(request, username=request.data['username'
+                                                               ''], password=request.data['password'])
 
             if user is not None:
                 if user.is_active:
@@ -122,9 +123,9 @@ class LoginAccount(APIView):
 
                     return JsonResponse({'Status': True, 'Token': token.key})
 
-            return JsonResponse({'Status': False, 'Errors': 'Не удалось авторизовать'})
+            return JsonResponse({'Status': False, 'Errors': 'Не удалось авторизовать/Failed to authorize'})
 
-        return JsonResponse({'Status': False, 'Errors': 'Не указаны все необходимые аргументы'})
+        return JsonResponse({'Status': False, 'Errors': 'Не указаны все необходимые аргументы/All necessary arguments are not specified'})
 
 
 class CategoryView(ListAPIView):
