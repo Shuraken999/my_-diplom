@@ -22,7 +22,7 @@ USER_TYPE_CHOICES = (
 )
 
 
-class User(models.Model):
+class User(AbstractUser):
     username_validator = UnicodeUsernameValidator()
     username = models.CharField(
         _('username'),
@@ -31,16 +31,14 @@ class User(models.Model):
         validators=[username_validator],
         error_messages={
             'unique': _("A user with that username already exists."),
-        },
+        }, unique=True
     )
-    first_name = models.CharField(verbose_name='Имя', max_length=40, blank=True)
-    last_name = models.CharField(verbose_name='Фамилия', max_length=40, blank=True)
     email = models.EmailField(_('email address'), unique=True)
     company = models.CharField(verbose_name='Компания', max_length=40, blank=True)
     position = models.CharField(verbose_name='Должность', max_length=40, blank=True)
     is_active = models.BooleanField(
         _('active'),
-        default=False,
+        default=True,
         help_text=_(
             'Designates whether this user should be treated as active. '
             'Unselect this instead of deleting accounts.'
