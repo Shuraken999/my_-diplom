@@ -18,16 +18,21 @@ from django.contrib import admin
 from django.urls import path
 
 from inetshop.views import ProductInfoView, CategoryView, ShopView, PartnerUpdate, RegisterAccount, AccountDetails, \
-    LoginAccount
+    LoginAccount, ProductsView, BasketView, OrderView
 
 app_name = 'inetshop'
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('categories', CategoryView.as_view(), name='categories'),
     path('shops', ShopView.as_view(), name='shops'),
-    path('products', ProductInfoView.as_view(), name='product'),
+    path('products', ProductsView.as_view(), name='products'),
+    path('product/<product_id>', ProductInfoView.as_view(), name='product'),
     path('partner/update', PartnerUpdate.as_view(), name='partner-update'),
     path('user/register', RegisterAccount.as_view(), name='user-register'),
     path('user/login', LoginAccount.as_view(), name='user-login'),
     path('user/details', AccountDetails.as_view(), name='user-details'),
+    path('basket', BasketView.as_view(), name='basket'),
+    path('order', OrderView.as_view(), name='order'),
 ]
