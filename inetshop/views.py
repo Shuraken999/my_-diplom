@@ -17,7 +17,8 @@ from ujson import loads as load_json
 from yaml import load as load_yaml, Loader
 
 from inetshop.models import Shop, Category, Product, ProductInfo, Parameter, ProductParameter, Order, OrderItem, \
-    Contact
+    Contact, ConfirmEmailToken
+# from inetshop.signals import new_user_registered, new_order
 from inetshop.serializers import CategorySerializer, ShopSerializer, ProductInfoSerializer, ContactSerializer, \
     UserSerializer, ProductSerializer, OrderSerializer, OrderItemSerializer
 
@@ -60,6 +61,29 @@ class RegisterAccount(APIView):
                     return JsonResponse({'Status': True})
                 else:
                     return JsonResponse({'Status': False, 'Errors': user_serializer.errors})
+
+        return JsonResponse({'Status': False, 'Errors': 'Не указаны все необходимые аргументы'})
+
+
+class ConfirmAccount(APIView):
+    """
+    Класс для подтверждения почтового адреса
+    """
+    # Регистрация методом POST
+    def post(self, request, *args, **kwargs):
+
+        # проверяем обязательные аргументы
+        if {'email', 'token'}.issubset(request.data):
+
+            token = ConfirmEmailToken.objects.filter(user__email=request.data['email'],
+                                                     key=request.data['token']).first()
+            if token:
+                token.user.is_active = True
+                token.user.save()
+                token.delete()
+                return JsonResponse({'Status': True})
+            else:
+                return JsonResponse({'Status': False, 'Errors': 'Неправильно указан токен или email'})
 
         return JsonResponse({'Status': False, 'Errors': 'Не указаны все необходимые аргументы'})
 
@@ -256,26 +280,26 @@ class BasketView(APIView):
         return JsonResponse({'Status': False, 'Errors': 'Не указаны все необходимые аргументы/All necessary arguments '
                                                         'are not specified'})
 
-        # удалить товары из корзины
-        def delete(self, request, *args, **kwargs):
-            if not request.user.is_authenticated:
-                return JsonResponse({'Status': False, 'Error': 'Log in required'}, status=403)
+    # удалить товары из корзины
+    def delete(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return JsonResponse({'Status': False, 'Error': 'Log in required'}, status=403)
 
-            items_sting = request.data.get('items')
-            if items_sting:
-                items_list = items_sting.split(',')
-                basket, _ = Order.objects.get_or_create(user_id=request.user.id, state='basket')
-                query = Q()
-                objects_deleted = False
-                for order_item_id in items_list:
-                    if order_item_id.isdigit():
-                        query = query | Q(order_id=basket.id, id=order_item_id)
-                        objects_deleted = True
+        items_sting = request.data.get('items')
+        if items_sting:
+            items_list = items_sting.split(',')
+            basket, _ = Order.objects.get_or_create(user_id=request.user.id, state='basket')
+            query = Q()
+            objects_deleted = False
+            for order_item_id in items_list:
+                if order_item_id.isdigit():
+                    query = query | Q(order_id=basket.id, id=order_item_id)
+                    objects_deleted = True
 
-                if objects_deleted:
-                    deleted_count = OrderItem.objects.filter(query).delete()[0]
-                    return JsonResponse({'Status': True, 'Удалено объектов': deleted_count})
-            return JsonResponse({'Status': False, 'Errors': 'Не указаны все необходимые аргументы'})
+            if objects_deleted:
+                deleted_count = OrderItem.objects.filter(query).delete()[0]
+                return JsonResponse({'Status': True, 'Удалено объектов': deleted_count})
+        return JsonResponse({'Status': False, 'Errors': 'Не указаны все необходимые аргументы'})
 
 
 class PartnerUpdate(APIView):
@@ -337,12 +361,19 @@ class OrderView(APIView):
         if not request.user.is_authenticated:
             return JsonResponse({'Status': False, 'Error': 'Log in required'}, status=403)
 
-        if {'id', 'contact'}.issubset(request.data):
+        if {'id', 'city', 'street', 'house', 'phone'}.issubset(request.data):
+            contact, _ = Contact.objects.get_or_create(city=request.data['city'],
+                                                       street=request.data['street'],
+                                                       house=request.data['house'],
+                                                       phone=request.data['phone'],
+                                                       user_id=request.user.id
+                                                       )
+            print(contact)
             if request.data['id'].isdigit():
                 try:
                     is_updated = Order.objects.filter(
                         user_id=request.user.id, id=request.data['id']).update(
-                        contact_id=request.data['contact'],
+                        contact_id=contact.id,
                         state='new')
                 except IntegrityError as error:
                     print(error)
@@ -352,4 +383,7 @@ class OrderView(APIView):
                         # new_order.send(sender=self.__class__, user_id=request.user.id)
                         return JsonResponse({'Status': True})
 
-        return JsonResponse({'Status': False, 'Errors': 'Не указаны все необходимые аргументы'})
+        return JsonResponse({'Status': False, 'Errors': 'Не указаны все необходимые аргументы и контактов_'
+                                                        'All necessary arguments and contacts are not specified'})
+
+
