@@ -4,6 +4,7 @@ import yaml
 from django.contrib.auth import authenticate
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
+from django.core.mail import EmailMultiAlternatives
 from django.core.validators import URLValidator
 from django.db import IntegrityError
 from django.db.models import Q, Sum, F
@@ -16,9 +17,10 @@ from rest_framework.views import APIView
 from ujson import loads as load_json
 from yaml import load as load_yaml, Loader
 
+from backendshop import settings
 from inetshop.models import Shop, Category, Product, ProductInfo, Parameter, ProductParameter, Order, OrderItem, \
-    Contact, ConfirmEmailToken
-# from inetshop.signals import new_user_registered, new_order
+    Contact, ConfirmEmailToken, User
+# from inetshop.signals import new_order
 from inetshop.serializers import CategorySerializer, ShopSerializer, ProductInfoSerializer, ContactSerializer, \
     UserSerializer, ProductSerializer, OrderSerializer, OrderItemSerializer
 
@@ -368,7 +370,6 @@ class OrderView(APIView):
                                                        phone=request.data['phone'],
                                                        user_id=request.user.id
                                                        )
-            print(contact)
             if request.data['id'].isdigit():
                 try:
                     is_updated = Order.objects.filter(
