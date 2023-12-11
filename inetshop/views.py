@@ -20,12 +20,9 @@ from yaml import load as load_yaml, Loader
 from backendshop import settings
 from inetshop.models import Shop, Category, Product, ProductInfo, Parameter, ProductParameter, Order, OrderItem, \
     Contact, ConfirmEmailToken, User
-# from inetshop.signals import new_order
+from inetshop.signals import new_order, new_user_registered
 from inetshop.serializers import CategorySerializer, ShopSerializer, ProductInfoSerializer, ContactSerializer, \
     UserSerializer, ProductSerializer, OrderSerializer, OrderItemSerializer
-
-
-# UserSerializer, OrderItemSerializer, OrderSerializer
 
 
 class RegisterAccount(APIView):
@@ -59,7 +56,7 @@ class RegisterAccount(APIView):
                     user = user_serializer.save()
                     user.set_password(request.data['password'])
                     user.save()
-                    # new_user_registered.send(sender=self.__class__, user_id=user.id)
+                    new_user_registered.send(sender=self.__class__, user_id=user.id)
                     return JsonResponse({'Status': True})
                 else:
                     return JsonResponse({'Status': False, 'Errors': user_serializer.errors})
@@ -146,7 +143,6 @@ class LoginAccount(APIView):
             if user is not None:
                 if user.is_active:
                     token, _ = Token.objects.get_or_create(user=user)
-
                     return JsonResponse({'Status': True, 'Token': token.key})
 
             return JsonResponse({'Status': False, 'Errors': 'Не удалось авторизовать/Failed to authorize'})
@@ -381,7 +377,7 @@ class OrderView(APIView):
                     return JsonResponse({'Status': False, 'Errors': 'Неправильно указаны аргументы'})
                 else:
                     if is_updated:
-                        # new_order.send(sender=self.__class__, user_id=request.user.id)
+                        new_order.send(sender=self.__class__, user_id=request.user.id)
                         return JsonResponse({'Status': True})
 
         return JsonResponse({'Status': False, 'Errors': 'Не указаны все необходимые аргументы и контактов_'
