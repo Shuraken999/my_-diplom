@@ -33,7 +33,8 @@ class RegisterAccount(APIView):
     def post(self, request, *args, **kwargs):
 
         # проверяем обязательные аргументы
-        if {'username', 'first_name', 'last_name', 'email', 'password', 'company', 'position', "type"}.issubset(request.data):
+        if ({'username', 'first_name', 'last_name', 'email', 'password', 'company', 'position',
+             'type'}.issubset(request.data)):
             errors = {}
 
             # проверяем пароль на сложность
@@ -48,7 +49,6 @@ class RegisterAccount(APIView):
                 return JsonResponse({'Status': False, 'Errors': {'password': error_array}})
             else:
                 # проверяем данные для уникальности имени пользователя
-                # request.data._mutable = True
                 request.data.update({})
                 user_serializer = UserSerializer(data=request.data)
                 if user_serializer.is_valid():

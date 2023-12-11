@@ -14,11 +14,11 @@ class ContactSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    # contacts = ContactSerializer(read_only=True, many=True)
+    contacts = ContactSerializer(read_only=True, many=True)
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'first_name', 'last_name', 'email', 'company', 'position')
+        fields = ('id', 'username', 'first_name', 'last_name', 'email', 'company', 'position', 'type', 'contacts')
         read_only_fields = ('id',)
 
 
