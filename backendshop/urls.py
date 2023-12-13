@@ -22,7 +22,6 @@ from inetshop.views import ProductInfoView, CategoryView, ShopView, PartnerUpdat
 
 app_name = 'inetshop'
 
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('categories', CategoryView.as_view(), name='categories'),

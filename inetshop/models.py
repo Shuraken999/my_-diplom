@@ -20,6 +20,8 @@ USER_TYPE_CHOICES = (
     ('buyer', 'Покупатель'),
 
 )
+
+
 class UserManager(BaseUserManager):
     """
     Миксин для управления пользователями
@@ -286,4 +288,3 @@ class ConfirmEmailToken(models.Model):
 
     def __str__(self):
         return "Password reset token for user {user}".format(user=self.user)
-
