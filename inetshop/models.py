@@ -20,6 +20,8 @@ USER_TYPE_CHOICES = (
     ('buyer', 'Покупатель'),
 
 )
+
+
 class UserManager(BaseUserManager):
     """
     Миксин для управления пользователями
@@ -143,9 +145,9 @@ class Product(models.Model):
 class ProductInfo(models.Model):
     model = models.CharField(max_length=80, verbose_name='Модель', blank=True)
     external_id = models.PositiveIntegerField(verbose_name='Внешний ИД')
-    product = models.ForeignKey(Product, verbose_name='Продукт', related_name='product_infos', blank=True,
+    product = models.ForeignKey(Product, verbose_name='Продукт', related_name='product_info', blank=True,
                                 on_delete=models.CASCADE)
-    shop = models.ForeignKey(Shop, verbose_name='Магазин', related_name='product_infos', blank=True,
+    shop = models.ForeignKey(Shop, verbose_name='Магазин', related_name='product_info', blank=True,
                              on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(verbose_name='Количество')
     price = models.PositiveIntegerField(verbose_name='Цена')
@@ -286,4 +288,3 @@ class ConfirmEmailToken(models.Model):
 
     def __str__(self):
         return "Password reset token for user {user}".format(user=self.user)
-
