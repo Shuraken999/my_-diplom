@@ -31,6 +31,7 @@ class RegisterAccount(APIView):
     """
     Для регистрации покупателей
     """
+
     # Регистрация методом POST
     def post(self, request, *args, **kwargs):
 
@@ -390,5 +391,3 @@ class OrderView(APIView):
 
         return JsonResponse({'Status': False, 'Errors': 'Не указаны все необходимые аргументы и контактов_'
                                                         'All necessary arguments and contacts are not specified'})
-
-
